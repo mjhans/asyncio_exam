@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python
 
 
 import json
@@ -17,7 +17,10 @@ class SimpleRedis(object):
 	def redisQ_pop(self, qkey):
 		rq_key = "{}:{}".format(REDISQ_PREFIX, qkey)
 		msg = self.redis_conn.lpop(rq_key)
-		return pickle.loads(msg)
+		result = None
+		if msg is not None:
+			result = pickle.loads(msg)
+		return result
 	
 	def redisQ_push(self, qkey, value):
 		rq_key = "{}:{}".format(REDISQ_PREFIX, qkey)
@@ -35,3 +38,16 @@ class SimpleRedis(object):
 		h_field = "{}:{}".format(REDISHASH_PREFIX, field)
 		msg  = self.redis_conn.hget(h_field, hkey)
 		return pickle.loads(msg)
+	
+
+if __name__ == "__main__":
+	sr = SimpleRedis()
+	sr.redisQ_push("test", 1)
+	sr.redisQ_push("test", 2)
+	sr.redisQ_push("test", 3)
+	
+	while True:
+		res = sr.redisQ_pop("test")
+		if res is None:
+			break
+		print(res)
