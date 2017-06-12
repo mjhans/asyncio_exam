@@ -1,8 +1,13 @@
 #!/usr/bin/env python
 
+# builtin module
 
+
+# pip install module
 import requests
 from bs4 import BeautifulSoup
+
+# user defined module
 from util.myRedis import SimpleRedis
 
 URL_TPL = "http://comic.naver.com/webtoon/list.nhn?titleId=20853&weekday=tue&page={}"
@@ -47,18 +52,21 @@ def collect_one_page(page_index):
 	return res_parse
 	
 def get_pageindex_from_redis(simple_redis):
+	total = 0
 	while True:
-		index = simple_redis.redisQ_pop("page")
-		if index is None:
+		indexes = simple_redis.redisQ_pop("page")
+		if indexes is None:
 			break
-		infos = collect_one_page(index)
-		insert_webtoon_info(simple_redis, infos)
+		for index in indexes:
+			infos = collect_one_page(index)
+			insert_webtoon_info(simple_redis, infos)
+			total += 1
+	
+	print("{} 저장되었습니다".format(total))
 		
 def insert_webtoon_info(simple_redis, infos):
 	for info in infos:
 		res = simple_redis.redis_hash_set("maso", info[0], info)
-		if res == 1:
-			print("저장이 완료되었습니다")
 			
 
 def do_main():
