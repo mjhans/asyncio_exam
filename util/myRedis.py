@@ -39,6 +39,7 @@ class SimpleRedis(object):
 		msg  = self.redis_conn.hget(h_field, hkey)
 		return pickle.loads(msg)
 	
+	
 
 if __name__ == "__main__":
 	sr = SimpleRedis()

@@ -2,9 +2,10 @@
 
 from util.myRedis import SimpleRedis
 
-MAX = 50
+MAX = 100
 CNT = 5
-if __name__ == "__main__":
+
+def do_insert():
 	sr = SimpleRedis()
 	index_list = list()
 	for i in range(MAX):
@@ -13,3 +14,6 @@ if __name__ == "__main__":
 		if idx % CNT == 0:
 			sr.redisQ_push("page", index_list)
 			index_list = list()
+			
+if __name__ == "__main__":
+	do_insert()

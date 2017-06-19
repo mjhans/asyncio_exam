@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # builtin module
-
+from datetime import datetime
 
 # pip install module
 import requests
@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 
 # user defined module
 from util.myRedis import SimpleRedis
+from util.redis_insert import *
 
 URL_TPL = "http://comic.naver.com/webtoon/list.nhn?titleId=20853&weekday=tue&page={}"
 
@@ -74,9 +75,9 @@ def do_main():
 	get_pageindex_from_redis(sr)
 
 if __name__ == "__main__":
+	do_insert()
+	sts = datetime.now()
 	do_main()
+	ets = datetime.now()
 	
-
-
-
-
+	print("elapse : {}".format(ets-sts))
